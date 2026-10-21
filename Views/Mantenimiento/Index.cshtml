@@ -1,0 +1,41 @@
+﻿@model List<DataModels.MvcVehiculosDBStoredProcedures.SpVehiculosListarDisponiblesResult >
+@{
+    ViewBag.Title = "Mantenimiento de Vehiculos";
+}
+
+<h2>Index</h2>
+
+
+@Html.ActionLink("Crear vehiculo", "Crear", "Mantenimiento", null, new { @class = "btn btn-primary" })
+<table class="table table-bordered table-striped table table-hover" >
+    
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Marca</th>
+            <th>Modelito</th>
+            <th>Placa</th>
+        </tr>
+     </thead>
+
+
+    <tbody>
+        @foreach (var vehiculo in Model)
+        {
+            <tr>
+                <td>@vehiculo.VehiculoId</td>
+                <td>@vehiculo.Marca</td>
+                <td>@vehiculo.Modelo - @vehiculo.Año</td>
+                <td>@vehiculo.Placa</td>
+            </tr>
+        }
+    </tbody>
+
+
+
+
+
+
+
+
+</table>

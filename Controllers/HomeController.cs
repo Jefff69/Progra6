@@ -6,13 +6,16 @@ using System.Web.Mvc;
 
 namespace Progra6.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
+        [Authorize]
         public ActionResult Index()
         {
             return View();
         }
 
+        [Authorize(Roles = "Lectura")]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

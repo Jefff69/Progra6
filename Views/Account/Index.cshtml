@@ -1,4 +1,4 @@
-﻿
+﻿@model Progra6.Models.UsuarioLogin
 @{
     ViewBag.Title = "Index";
 }
@@ -12,7 +12,7 @@
 
     <div>
         <label>Usuario:</label>
-        <input type="password" name="t_usuario" />
+        @Html.TextBoxFor(_ => _.LoginName)
     </div>
 
 
@@ -20,7 +20,7 @@
 
     <div>
         <label>Password:</label>
-        <input type="password" name="t_password" />
+        @Html.PasswordFor(_ => _.Password)
     </div>
 
     if (ViewBag.Error != null)

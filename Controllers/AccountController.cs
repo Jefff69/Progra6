@@ -1,15 +1,16 @@
 ﻿using DataModels;
+using LinqToDB;
 using System;
 using System.Collections.Generic;
+using System.Configuration.Provider;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Xml.Linq;
 using static DataModels.MvcVehiculosDBStoredProcedures;
+using Progra6.Models;
 
-
-namespace Progra6.Controllers
-{
     public class AccountController : Controller
     {
 
@@ -24,11 +25,11 @@ namespace Progra6.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(String t_usuario, string t_password)
+        public ActionResult Index(UsuarioLogin usuario)
         {
             
-            if (string.IsNullOrWhiteSpace(t_usuario) ||
-                string.IsNullOrWhiteSpace(t_password))
+            if (string.IsNullOrWhiteSpace(usuario.LoginName) ||
+                string.IsNullOrWhiteSpace(usuario.Password))
             {
                 ViewBag.Error = "Debe de Ingresar el usuario y/o la contraseña.";
                 return View();
@@ -41,8 +42,10 @@ namespace Progra6.Controllers
 
             using (var db = new MvcVehiculosDB("MyDatabase"))
             {
-                user = db.SpUsuariosLogin(t_usuario, t_password).FirstOrDefault();
+                user = db.SpUsuariosLogin(usuario.LoginName, usuario.Password).FirstOrDefault();
             }
+
+
 
             if (user != null)
             {
@@ -73,6 +76,13 @@ namespace Progra6.Controllers
 
         }
 
-    }
 
-}
+        // GET: Account/Logout
+
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index");
+
+        }
+    }

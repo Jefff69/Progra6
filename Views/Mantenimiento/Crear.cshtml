@@ -1,0 +1,91 @@
+﻿@model DataModels.Vehiculo
+@{
+    ViewBag.Title = "Crear";
+}
+
+<h2>Crear Vehiculo</h2>
+
+<form method="post" id="crearVehiculoForm">
+    <div class="mb-3">
+        <label class="form-label" for="ModeloId">Modelo</label>
+        @Html.TextBoxFor(model => model.ModeloId, new { @class = "form-control" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="Placa">Placa</label>
+        @Html.TextBoxFor(model => model.Placa, new { @class = "form-control" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="Año">Año</label>
+        @Html.TextBoxFor(model => model.Año, "0", new { @class = "form-control" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="Color">Color</label>
+        <div>
+
+            <label>@Html.RadioButtonFor(model => model.Color, "Blanco")Blanco</label>
+            <label>@Html.RadioButtonFor(model => model.Color, "Negro")Negro</label>
+            <label>@Html.RadioButtonFor(model => model.Color, "Azul")Azul</label>
+
+        </div>
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label" for="FechaCompra">Fecha Compra</label>
+        @Html.TextBoxFor(model => model.FechaCompra, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="Disponible">@Html.CheckBoxFor(model => model.Disponible) Disponible</label>
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-danger" })
+
+
+    @ViewBag.Mensaje
+
+
+</form>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/validacionesGenericas.js"></script>
+
+    <script type="text/javascript">
+
+            $("#crearVehiculoForm").validate({
+                rules: {
+                    'ModeloId': { required: true },
+                    'Placa': { required: true },
+                    'Año': { required: true, number:true,min:2010 },
+                    'FechaCompra': { required: true }
+                },
+                /*submitHandler: function (form) {
+                    console.log("Se ejecuta el submit Handler")
+                    guardar();
+                }
+                });
+
+
+                    function guardar() {
+                        var data = {
+                            ModeloId: $("#ModeloId").val(),
+                            Placa: $("#Placa").val(),
+                            Año: $("#Año").val(),
+                            Color: $("input[name='Color']:checked").val(),
+                            FechaCompra: $("#FechaCompra").val(),
+                            Disponible: $("#Disponible").is(":checked"),
+                        };
+                        console.log(data);
+                        $.post("/Mantenimiento/Crear", { v: data }, function (mensaje) {alert(mensaje)});
+                    }
+
+    </script>
+}
+
