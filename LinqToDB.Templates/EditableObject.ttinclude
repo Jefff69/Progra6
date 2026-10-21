@@ -1,0 +1,46 @@
+<#@ include file="T4Model.ttinclude" once="true" #>
+<#
+	{
+		var beforeGenerateModel = BeforeGenerateModel;
+		BeforeGenerateModel = () =>
+		{
+			ModelGenerator.EditableObjectImplementation<MemberGroup,Method,Property,Field>();
+			beforeGenerateModel();
+		};
+
+		SetPropertyValueAction += (obj,prop,val) =>
+		{
+			if (prop == "IsEditable")
+			{
+				if (obj is Property)
+					((Property)obj).IsEditable = (bool)val;
+			}
+		};
+	}
+#><#+
+partial class Property : IEditableObjectProperty
+{
+	public bool   IsEditable  { get; set; }
+	public string IsDirtyText { get; set; } = "{0} != {1}";
+}
+
+public class EditableProperty : Property
+{
+	public EditableProperty()
+	{
+		IsEditable = true;
+	}
+
+	public EditableProperty(ModelType type, string name)
+		: base(type.ToTypeName, name)
+	{
+		IsEditable = true;
+	}
+
+	public EditableProperty(string type, string name)
+		: base(() => type, name)
+	{
+		IsEditable = true;
+	}
+}
+#>

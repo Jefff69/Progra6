@@ -1,0 +1,12 @@
+<#@ include file="T4Model.ttinclude"    once="true" #>
+<#@ include file="Validation.ttinclude" once="true" #>
+<#
+	{
+		var beforeGenerateModel = BeforeGenerateModel;
+		BeforeGenerateModel = () =>
+		{
+			beforeGenerateModel();
+			ModelGenerator.NotifyDataErrorInfoImplementation<MemberGroup,Method,Property,Field,Event,Attribute>();
+		};
+	}
+#>

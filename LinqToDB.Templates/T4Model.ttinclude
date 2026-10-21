@@ -1,0 +1,288 @@
+<#@ assembly name="System.Core"                                               #>
+<#@ assembly name="$(LinqToDBT4SharedTools)linq2db.dll"                       #>
+<#@ assembly name="$(LinqToDBT4SharedTools)linq2db.Scaffold.dll"              #>
+<#@ assembly name="$(LinqToDBT4SharedTools)Microsoft.Bcl.AsyncInterfaces.dll" #>
+<#@ import namespace="System"                                                 #>
+<#@ import namespace="System.Linq"                                            #>
+<#@ import namespace="System.Collections.Generic"                             #>
+<#@ import namespace="LinqToDB.Tools.ModelGeneration"                         #>
+<#@ import namespace="LinqToDB.SchemaProvider"                                #>
+<#+
+
+private ModelGenerator<Table,Procedure> _modelGenerator;
+public  ModelGenerator<Table,Procedure>  ModelGenerator
+{
+	get
+	{
+		return _modelGenerator != null ?
+			_modelGenerator :
+			_modelGenerator = new ModelGenerator<Table,Procedure>(new ModelSource(), GenerationEnvironment, Write, WriteLine, PushIndent, PopIndent, Error);
+	}
+}
+
+ModelSource Model { get { return (ModelSource)ModelGenerator.Model; } set { ModelGenerator.Model = value; } }
+
+Action                 BeforeGenerateModel { get { return ModelGenerator.BeforeGenerateModel; } set { ModelGenerator.BeforeGenerateModel = value; } }
+Action<string>         WriteComment        { get { return ModelGenerator.WriteComment;        } set { ModelGenerator.WriteComment        = value; } }
+Action<string>         WriteUsing          { get { return ModelGenerator.WriteUsing;          } set { ModelGenerator.WriteUsing          = value; } }
+Action<string>         WriteBeginNamespace { get { return ModelGenerator.WriteBeginNamespace; } set { ModelGenerator.WriteBeginNamespace = value; } }
+Action                 WriteEndNamespace   { get { return ModelGenerator.WriteEndNamespace;   } set { ModelGenerator.WriteEndNamespace   = value; } }
+Action<IAttribute>     WriteAttribute      { get { return ModelGenerator.WriteAttribute;      } set { ModelGenerator.WriteAttribute      = value; } }
+Action<string>         BeginRegion         { get { return ModelGenerator.BeginRegion;         } set { ModelGenerator.BeginRegion         = value; } }
+Action                 EndRegion           { get { return ModelGenerator.EndRegion;           } set { ModelGenerator.EndRegion           = value; } }
+Action<IProperty,bool> WriteProperty       { get { return ModelGenerator.WriteProperty;       } set { ModelGenerator.WriteProperty       = value; } }
+Action<IField>         WriteField          { get { return ModelGenerator.WriteField;          } set { ModelGenerator.WriteField          = value; } }
+Action<IEvent>         WriteEvent          { get { return ModelGenerator.WriteEvent;          } set { ModelGenerator.WriteEvent          = value; } }
+
+bool GenerateProcedureErrors { get { return ModelGenerator.GenerateProcedureErrors;            } set { ModelGenerator.GenerateProcedureErrors      = value; } }
+
+/// <summary>
+/// Enables generation of nullable reference type annotations.
+/// </summary>
+static bool EnableNullableReferenceTypes  { get { return LinqToDB.Tools.ModelGeneration.ModelGenerator.EnableNullableReferenceTypes; } set { LinqToDB.Tools.ModelGeneration.ModelGenerator.EnableNullableReferenceTypes = value; } }
+
+public void GenerateModel()
+{
+	ModelGenerator.GenerateModel();
+}
+
+public partial class ModelSource : ModelSource<ModelSource,Namespace>
+{
+	public virtual void Render(GeneratedTextTransformation tt)
+	{
+		Render(tt.ModelGenerator);
+	}
+}
+
+public partial class Namespace : Namespace<Namespace>
+{
+	public virtual void Render(GeneratedTextTransformation tt)
+	{
+		Render(tt.ModelGenerator);
+	}
+}
+
+public partial class Class : Class<Class>
+{
+	public Class() {}
+	public Class(string name, params IClassMember[] members) : base(name, members) {}
+
+	public void Render(GeneratedTextTransformation tt)
+	{
+		Render(tt.ModelGenerator);
+	}
+}
+
+public partial class MemberGroup : MemberGroup<MemberGroup>
+{
+	public void Render(GeneratedTextTransformation tt, bool isCompact)
+	{
+		Render(tt.ModelGenerator, isCompact);
+	}
+}
+
+public partial class Property : Property<Property>
+{
+	public Property()
+	{
+	}
+
+	public Property(ModelType type, string name, Func<IEnumerable<string>> getBodyBuilder = null, Func<IEnumerable<string>> setBodyBuilder = null)
+		: base(type, name, getBodyBuilder, setBodyBuilder)
+	{
+	}
+
+	public Property(bool enforceNotNullable, Func<string> typeBuilder, string name, Func<IEnumerable<string>> getBodyBuilder = null, Func<IEnumerable<string>> setBodyBuilder = null)
+		: base(enforceNotNullable, typeBuilder, name, getBodyBuilder, setBodyBuilder)
+	{
+	}
+
+	public Property(Func<string> typeBuilder, string name, Func<IEnumerable<string>> getBodyBuilder = null, Func<IEnumerable<string>> setBodyBuilder = null)
+		: base(typeBuilder, name, getBodyBuilder, setBodyBuilder)
+	{
+	}
+
+	public Property(string type, string name, Func<IEnumerable<string>> getBodyBuilder = null, Func<IEnumerable<string>> setBodyBuilder = null)
+		: base(type, name, getBodyBuilder, setBodyBuilder)
+	{
+	}
+
+	public void Render(GeneratedTextTransformation tt, bool isCompact)
+	{
+		Render(tt.ModelGenerator, isCompact);
+	}
+}
+
+public partial class Field : Field<Field>
+{
+	public Field() {}
+	public Field(ModelType type,           string name) : base(type,        name) {}
+	public Field(Func<string> typeBuilder, string name) : base(typeBuilder, name) {}
+	public Field(string type,              string name) : base(type,        name) {}
+
+	public void Render(GeneratedTextTransformation tt, bool isCompact)
+	{
+		Render(tt.ModelGenerator, isCompact);
+	}
+}
+
+public partial class Event : Event<Event>
+{
+	public Event() {}
+	public Event(Type eventType,   string name, bool nullable) : base(eventType, name, nullable) {}
+	public Event(string eventType, string name, bool nullable) : base(eventType, name, nullable) {}
+	public Event(Func<string> typeBuilder, string name) : base(typeBuilder, name) {}
+
+	public void Render(GeneratedTextTransformation tt, bool isCompact)
+	{
+		Render(tt.ModelGenerator, isCompact);
+	}
+}
+
+public partial class Method : Method<Method>
+{
+	public Method()
+	{
+	}
+
+	public Method(Func<string> typeBuilder, string name, IEnumerable<Func<string>> parameterBuilders = null, params Func<IEnumerable<string>>[] bodyBuilders)
+		: base(typeBuilder, name, parameterBuilders, bodyBuilders)
+	{
+	}
+
+	public static Method Create(string type, string name, IEnumerable<string> parameters = null, IEnumerable<string> body = null)
+	{
+		return new Method(
+			() => type,
+			name,
+			parameters?.Select<string,Func<string>>(p => () => p),
+			body?.Select<string,Func<IEnumerable<string>>>(p => () => new[] { p }).ToArray());
+	}
+
+	public void Render(GeneratedTextTransformation tt, bool isCompact)
+	{
+		Render(tt.ModelGenerator, isCompact);
+	}
+}
+
+public partial class Attribute : Attribute<Attribute>
+{
+	public Attribute() {}
+	public Attribute(string name, params string[] ps) : base(name, ps) {}
+
+	public virtual void Render(GeneratedTextTransformation tt)
+	{
+		tt.ModelGenerator.WriteAttribute(this);
+	}
+}
+
+public partial class Table : Class, ITable
+{
+	public Table()
+	{
+		Columns     = new Dictionary<string,IColumn>();
+		ForeignKeys = new Dictionary<string,IForeignKey>();
+	}
+
+	public TableSchema TableSchema             { get; set; }
+	public string      Schema                  { get; set; }
+	public string      TableName               { get; set; }
+	public string      DataContextPropertyName { get; set; }
+	public MemberBase  DataContextProperty     { get; set; }
+	public bool        IsView                  { get; set; }
+	public bool        IsProviderSpecific      { get; set; }
+	public bool        IsDefaultSchema         { get; set; }
+	public string      Description             { get; set; }
+	public string      AliasPropertyName       { get; set; }
+	public string      AliasTypeName           { get; set; }
+	public string      TypePrefix              { get; set; }
+
+	public string TypeName
+	{
+		get { return Name;  }
+		set { Name = value; }
+	}
+
+	public Dictionary<string,IColumn>     Columns     { get; set; }
+	public Dictionary<string,IForeignKey> ForeignKeys { get; set; }
+}
+
+public partial class ForeignKey : ForeignKey<ForeignKey>
+{
+}
+
+public partial class Procedure : Method, IProcedure<Table>
+{
+	public Procedure()
+	{
+		SimilarTables  = new List<Table>();
+		ProcParameters = new List<Parameter>();
+	}
+
+	public string          Schema              { get; set; }
+	public string          ProcedureName       { get; set; }
+	public string          PackageName         { get; set; }
+	public bool            IsFunction          { get; set; }
+	public bool            IsTableFunction     { get; set; }
+	public bool            IsAggregateFunction { get; set; }
+	public bool            IsDefaultSchema     { get; set; }
+	public bool            IsLoaded            { get; set; }
+	public string          Description         { get; set; }
+
+	public Table           ResultTable         { get; set; }
+	public Exception       ResultException     { get; set; }
+	public List<Table>     SimilarTables       { get; set; }
+	public List<Parameter> ProcParameters      { get; set; }
+}
+
+// Helpers.
+//
+
+static string LenDiff(int max, string str)
+{
+	var s = "";
+
+	while (max-- > str.Length)
+		s += " ";
+
+	return s;
+}
+
+public static IEnumerable<ITree> GetTreeNodes(ITree parent)
+{
+	foreach (var node in parent.GetNodes())
+	{
+		yield return node;
+
+		foreach (var grandNode in GetTreeNodes(node))
+			yield return grandNode;
+	}
+}
+
+public static ITree FindNode(ITree parent, Func<ITree,bool> func)
+{
+	foreach (var node in parent.GetNodes())
+	{
+		if (func(node))
+			return node;
+
+		var n = FindNode(node, func);
+
+		if (n != null)
+			return n;
+	}
+
+	return null;
+}
+
+event Action<IProperty,string,object> SetPropertyValueAction
+{
+	add    { ModelGenerator.SetPropertyValueAction += value; }
+	remove { ModelGenerator.SetPropertyValueAction -= value; }
+}
+
+public void SetPropertyValue(IProperty propertyObject, string propertyName, object value)
+{
+	ModelGenerator.SetPropertyValue(propertyObject, propertyName, value);
+}
+#>

@@ -1,0 +1,6 @@
+<#@ assembly name="$(LinqToDBT4SqlServerClientPath)Microsoft.SqlServer.Types.dll"  #>
+<#@ assembly name="$(LinqToDBT4SqlServerClientPath)Microsoft.SqlServer.Server.dll" #>
+<#
+	LinqToDB.DataProvider.SqlServer.SqlServerTools.ResolveSqlTypes(
+		typeof(Microsoft.SqlServer.Types.SqlGeography).Assembly);
+#>

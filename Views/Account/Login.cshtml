@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+
+@using (Html.BeginForm("Login", "Account", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div>
+        <label>Usuario:</label>
+        <input type="password" name="t_usuario" />
+    </div>
+
+
+
+
+    <div>
+        <label>Password:</label>
+        <input type="password" name="t_password" />
+    </div>
+
+    if (ViewBag.Error != null)
+    {
+        <div>
+            @ViewBag.Error
+        </div>
+    }
+
+
+    <button type="submit">Ingresar</button>
+
+}

@@ -1,0 +1,59 @@
+<#@ include file="T4Model.ttinclude" once="true" #>
+<#
+	{
+		var beforeGenerateModel = BeforeGenerateModel;
+		BeforeGenerateModel = () =>
+		{
+			beforeGenerateModel();
+			ModelGenerator.NotifyPropertyChangedImplementation<MemberGroup,Method,Field,Event,Attribute>();
+		};
+
+		SetPropertyValueAction += (obj,prop,val) =>
+		{
+			if (prop == "IsNotifying")
+			{
+				if (obj is Property)
+					((Property)obj).IsNotifying = (bool)val;
+			}
+		};
+	}
+#><#+
+public bool ImplementNotifyPropertyChanging         { get { return ModelGenerator.ImplementNotifyPropertyChanging;         } set { ModelGenerator.ImplementNotifyPropertyChanging         = value; } }
+public bool SkipNotifyPropertyChangedImplementation { get { return ModelGenerator.SkipNotifyPropertyChangedImplementation; } set { ModelGenerator.SkipNotifyPropertyChangedImplementation = value; } }
+
+partial class Property : INotifyingPropertyProperty
+{
+	public bool         IsNotifying { get; set; }
+	public List<string> Dependents  { get; set; } = new List<string>();
+}
+
+public class NotifyingProperty : Property
+{
+	public NotifyingProperty()
+	{
+		IsNotifying = true;
+	}
+
+	public NotifyingProperty(ModelType type, string name, params string[] dependents)
+		: base(type.ToTypeName, name)
+	{
+		IsNotifying = true;
+
+		if (dependents.Length == 0)
+			Dependents.Add(name);
+		else
+			Dependents.AddRange(dependents);
+	}
+
+	public NotifyingProperty(string type, string name, params string[] dependents)
+		: base(() => type, name)
+	{
+		IsNotifying = true;
+
+		if (dependents.Length == 0)
+			Dependents.Add(name);
+		else
+			Dependents.AddRange(dependents);
+	}
+}
+#>

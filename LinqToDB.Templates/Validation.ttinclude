@@ -1,0 +1,27 @@
+<#@ include file="NotifyPropertyChanged.ttinclude" once="true" #>
+<#
+	{
+		var beforeGenerateModel = BeforeGenerateModel;
+		BeforeGenerateModel = () =>
+		{
+			beforeGenerateModel();
+			ModelGenerator.ValidationImplementation<Class,MemberGroup,Method,Field,Attribute>();
+		};
+	}
+#>
+<#+
+partial class Property : IPropertyValidation
+{
+	public bool CustomValidation { get; set; }
+	public bool ValidateProperty { get; set; }
+
+	public bool Validate
+	{
+		set
+		{
+			CustomValidation = value;
+			ValidateProperty = value;
+		}
+	}
+}
+#>

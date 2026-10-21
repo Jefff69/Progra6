@@ -1,0 +1,66 @@
+<#@ assembly name="System.Data"                      #>
+<#@ import namespace="System.Collections.Generic"    #>
+<#@ import namespace="System.Data"                   #>
+<#@ import namespace="System.Globalization"          #>
+<#@ import namespace="System.Text"                   #>
+<#@ import namespace="LinqToDB"                      #>
+<#@ import namespace="LinqToDB.Data"                 #>
+<#@ import namespace="LinqToDB.Internal.SqlProvider" #>
+<#@ import namespace="LinqToDB.Internal.SqlQuery"    #>
+<#@ include file="DataModel.ttinclude" once="true"   #>
+<#
+	if (BaseDataContextClass == null)
+		BaseDataContextClass = "LinqToDB.Data.DataConnection";
+
+	{
+		var beforeGenerateModel = BeforeGenerateModel;
+		BeforeGenerateModel = () =>
+		{
+			GenerateTypesFromMetadata();
+			beforeGenerateModel();
+		};
+	}
+#><#+
+public Action BeforeGenerateLinqToDBModel { get { return ModelGenerator.BeforeGenerateLinqToDBModel; } set { ModelGenerator.BeforeGenerateLinqToDBModel = value; } }
+public Action AfterGenerateLinqToDBModel  { get { return ModelGenerator.AfterGenerateLinqToDBModel;  } set { ModelGenerator.AfterGenerateLinqToDBModel  = value; } }
+
+public Func<ITable,MemberBase> GenerateProviderSpecificTable { get { return ModelGenerator.GenerateProviderSpecificTable; } set { ModelGenerator.GenerateProviderSpecificTable = value; } }
+public Func<Parameter,bool>    GenerateProcedureDbType       { get { return ModelGenerator.GenerateProcedureDbType;       } set { ModelGenerator.GenerateProcedureDbType       = value; } }
+
+bool GenerateLinqToDBConnectionOptionsConstructors
+{
+	get { return GenerateDataOptionsConstructors;  }
+	set { GenerateDataOptionsConstructors = value; }
+}
+
+bool   GenerateDataOptionsConstructors     { get { return ModelGenerator.GenerateDataOptionsConstructors;     } set { ModelGenerator.GenerateDataOptionsConstructors     = value; } }
+bool   GenerateObsoleteAttributeForAliases { get { return ModelGenerator.GenerateObsoleteAttributeForAliases; } set { ModelGenerator.GenerateObsoleteAttributeForAliases = value; } }
+bool   GenerateFindExtensions              { get { return ModelGenerator.GenerateFindExtensions;              } set { ModelGenerator.GenerateFindExtensions              = value; } }
+bool   IsCompactColumns                    { get { return ModelGenerator.IsCompactColumns;                    } set { ModelGenerator.IsCompactColumns                    = value; } }
+bool   IsCompactColumnAliases              { get { return ModelGenerator.IsCompactColumnAliases;              } set { ModelGenerator.IsCompactColumnAliases              = value; } }
+bool   GenerateDataTypes                   { get { return ModelGenerator.GenerateDataTypes;                   } set { ModelGenerator.GenerateDataTypes                   = value; } }
+bool?  GenerateLengthProperty              { get { return ModelGenerator.GenerateLengthProperty;              } set { ModelGenerator.GenerateLengthProperty              = value; } }
+bool?  GeneratePrecisionProperty           { get { return ModelGenerator.GeneratePrecisionProperty;           } set { ModelGenerator.GeneratePrecisionProperty           = value; } }
+bool?  GenerateScaleProperty               { get { return ModelGenerator.GenerateScaleProperty;               } set { ModelGenerator.GenerateScaleProperty               = value; } }
+bool   GenerateDbTypes                     { get { return ModelGenerator.GenerateDbTypes;                     } set { ModelGenerator.GenerateDbTypes                     = value; } }
+bool   GenerateSchemaAsType                { get { return ModelGenerator.GenerateSchemaAsType;                } set { ModelGenerator.GenerateSchemaAsType                = value; } }
+bool   GenerateViews                       { get { return ModelGenerator.GenerateViews;                       } set { ModelGenerator.GenerateViews                       = value; } }
+bool   GenerateProcedureResultAsList       { get { return ModelGenerator.GenerateProcedureResultAsList;       } set { ModelGenerator.GenerateProcedureResultAsList       = value; } }
+bool   GenerateProceduresOnTypedContext    { get { return ModelGenerator.GenerateProceduresOnTypedContext;    } set { ModelGenerator.GenerateProceduresOnTypedContext    = value; } }
+bool   PrefixTableMappingWithSchema        { get { return ModelGenerator.PrefixTableMappingWithSchema;        } set { ModelGenerator.PrefixTableMappingWithSchema        = value; } }
+bool   PrefixTableMappingForDefaultSchema  { get { return ModelGenerator.PrefixTableMappingForDefaultSchema;  } set { ModelGenerator.PrefixTableMappingForDefaultSchema  = value; } }
+string SchemaNameSuffix                    { get { return ModelGenerator.SchemaNameSuffix;                    } set { ModelGenerator.SchemaNameSuffix                    = value; } }
+string SchemaDataContextTypeName           { get { return ModelGenerator.SchemaDataContextTypeName;           } set { ModelGenerator.SchemaDataContextTypeName           = value; } }
+bool   GenerateNameOf                      { get { return ModelGenerator.GenerateNameOf;                      } set { ModelGenerator.GenerateNameOf                      = value; } }
+
+bool   GenerateSqlServerDecimalOverflowProtection { get { return ModelGenerator.GenerateSqlServerDecimalOverflowProtection; } set { ModelGenerator.GenerateSqlServerDecimalOverflowProtection = value; } }
+
+public Dictionary<string,string>                              SchemaNameMapping     { get { return ModelGenerator.SchemaNameMapping;     } set { ModelGenerator.SchemaNameMapping     = value; } }
+public Func<string,string,Func<IMethod>,IEnumerable<IMethod>> GetConstructors       { get { return ModelGenerator.GetConstructors;       } set { ModelGenerator.GetConstructors       = value; } }
+public Func<IColumn,string,string,bool,string>                BuildColumnComparison { get { return ModelGenerator.BuildColumnComparison; } set { ModelGenerator.BuildColumnComparison = value; } }
+
+void GenerateTypesFromMetadata()
+{
+	ModelGenerator.GenerateTypesFromMetadata<MemberGroup,Class,Attribute,Method,Property,Field>();
+}
+#>
