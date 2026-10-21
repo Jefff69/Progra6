@@ -39,7 +39,7 @@ namespace Progra6.Controllers
 
 
 
-            using (var db = new MvcVehiculosDB("MyDataBase"))
+            using (var db = new MvcVehiculosDB("MyDatabase"))
             {
                 user = db.SpUsuariosLogin(t_usuario, t_password).FirstOrDefault();
             }
@@ -47,12 +47,13 @@ namespace Progra6.Controllers
             if (user != null)
             {
                 var ticket = new FormsAuthenticationTicket(
-                    1, user.Usuario,
+                    1,
+                    user.Usuario,
                     DateTime.Now,
                     DateTime.Now.AddMinutes(30),
                     false,
                     user.Rol);
-            }
+            
 
                 var cookie = new HttpCookie(
                     FormsAuthentication.FormsCookieName,
@@ -62,9 +63,10 @@ namespace Progra6.Controllers
 
 
                return RedirectToAction("Index", "Home");
-             }
-            
-             ViewBag.Error = "Usuario no encontrado.";
+
+            }
+
+            ViewBag.Error = "Usuario no encontrado.";
 
              return View();
             
