@@ -1,14 +1,20 @@
-﻿@model DataModels.Vehiculo
+﻿@model DataModels.MvcVehiculosDBStoredProcedures.SpVehiculosObtenerPorIdResult
 @{
-    ViewBag.Title = "Crear";
+    ViewBag.Title = (Model.VehiculoId == 0) ? "Nuevo Vehiculo" : "Actualizar Vehiculo";
 }
 
-<h2>Crear Vehiculo</h2>
+<h2>
+    @((Model.VehiculoId == 0) ? "Nuevo Vehiculo" : "Actualizar Vehiculo")
+</h2>
 
 <form method="post" id="crearVehiculoForm">
+    
+    @Html.HiddenFor(model => model.VehiculoId)
+    
     <div class="mb-3">
-        <label class="form-label" for="ModeloId">Modelo</label>
-        @Html.TextBoxFor(model => model.ModeloId, new { @class = "form-control" })
+        <label class="form-label" for="ModeloId">Modelo:</label>
+        @Html.DropDownListFor(model => model.ModeloId, new SelectList(ViewBag.modelos, "Id", "Text", Model.ModeloId), "Seleccione un modelo", new { @class = "form-control" })
+
     </div>
 
     <div class="mb-3">
@@ -43,7 +49,15 @@
 
     </div>
 
-    <button type="submit" class="btn btn-primary">Guardar</button>
+    <button type="submit" class="btn btn-primary">
+       @((Model.VehiculoId == 0) ? "Guardar" : "Actualizar")
+    </button>
+
+    @if (Model.VehiculoId != 0)
+    { 
+     @Html.ActionLink("Eliminar Vehiculo", "Eliminar", "Mantenimiento", new {id = Model.VehiculoId}, new {@class = "btn btn-danger"})
+    }
+
     @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-danger" })
 
 
@@ -66,13 +80,15 @@
                     'Año': { required: true, number:true,min:2010 },
                     'FechaCompra': { required: true }
                 },
-                /*submitHandler: function (form) {
+                /*
+                submitHandler: function (form) {
                     console.log("Se ejecuta el submit Handler")
                     guardar();
-                }
-                });
+                    return false;
+                }*/
+            });
 
-
+                /*
                     function guardar() {
                         var data = {
                             ModeloId: $("#ModeloId").val(),
@@ -84,7 +100,7 @@
                         };
                         console.log(data);
                         $.post("/Mantenimiento/Crear", { v: data }, function (mensaje) {alert(mensaje)});
-                    }
+                    }*/
 
     </script>
 }

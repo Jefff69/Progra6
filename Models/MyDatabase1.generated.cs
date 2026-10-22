@@ -185,6 +185,21 @@ namespace DataModels
 
 		#endregion
 
+		#region SpObtenerModelosMarcasActivas
+
+		public static IEnumerable<SpObtenerModelosMarcasActivasResult> SpObtenerModelosMarcasActivas(this MvcVehiculosDB dataConnection)
+		{
+			return dataConnection.QueryProc<SpObtenerModelosMarcasActivasResult>("[dbo].[sp_ObtenerModelosMarcasActivas]");
+		}
+
+		public partial class SpObtenerModelosMarcasActivasResult
+		{
+			public int    Id   { get; set; }
+			public string Text { get; set; }
+		}
+
+		#endregion
+
 		#region SpUsuariosLogin
 
 		public static IEnumerable<SpUsuariosLoginResult> SpUsuariosLogin(this MvcVehiculosDB dataConnection, string @Usuario, string @Password)

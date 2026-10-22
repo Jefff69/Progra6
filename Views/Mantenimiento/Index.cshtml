@@ -15,6 +15,7 @@
             <th>Marca</th>
             <th>Modelito</th>
             <th>Placa</th>
+            <th>Acciones</th>
         </tr>
      </thead>
 
@@ -27,6 +28,10 @@
                 <td>@vehiculo.Marca</td>
                 <td>@vehiculo.Modelo - @vehiculo.Año</td>
                 <td>@vehiculo.Placa</td>
+                <td>
+                    @Html.ActionLink("ModificarVehiculo", "Crear", "Mantenimiento", new { id = @vehiculo.VehiculoId }, new { @class = "btn btn-warning" })
+                    @Html.ActionLink("EliminarVehiculo", "Eliminar", "Mantenimiento", new { id = @vehiculo.VehiculoId }, new { @class = "btn btn-danger" })
+                </td>
             </tr>
         }
     </tbody>
